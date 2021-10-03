@@ -25,30 +25,57 @@ import (
 	"database/sql"
 	"fmt"
 	"time"
+	"os"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
 var Database *sql.DB
+var timerKillChannel = make(chan bool)
 
-const USERNAME = "wish_user"
-const PASSWORD = "beowulf"
-const DATABASE = "wishlist"
-const ADDRESS = "server.pearcenet.local"
+var (
+	USERNAME = os.Getenv("WISHLIST_DB_USERNAME")
+	PASSWORD = os.Getenv("WISHLIST_DB_PASSWORD")
+	DATABASE = os.Getenv("WISHLIST_DB_DATABASE")
+	HOSTNAME = os.Getenv("WISHLIST_DB_HOSTNAME")
+)
 
+// Tries to connect to the DB for 5 minutes before giving up
 const CONN_TIMEOUT = 5 * time.Minute
 
-func ConnectDB() error {
-	dataSourceStr := USERNAME + ":" + PASSWORD + "@tcp(" + ADDRESS + ":3306)/" + DATABASE
-	var err error
-	Database, err = sql.Open("mysql", dataSourceStr)
+func ConnectDB() {
+	dataSourceStr := USERNAME + ":" + PASSWORD + "@tcp(" + HOSTNAME + ":3306)/" + DATABASE
 
-	if err != nil {
-		fmt.Println(" [FATAL] Failed to Connect to the DB:", err)
+	fmt.Printf(" [INFO] Connecting to Database...\n")
+	var err error
+	go DBConnTimer(timerKillChannel)
+	for {
+		Database, err = sql.Open("mysql", dataSourceStr)
+		err = Database.Ping()
+		if err == nil {
+			timerKillChannel <- true
+			break
+		}
 	}
 
-	fmt.Println(" [INFO] Connected to Database Successfully!")
-	return err
+	fmt.Printf(" [INFO] Successfully connected to Database!\n")
+	Database.Exec("SET NAMES 'utf8mb4'")
+}
+
+func DBConnTimer(killChan chan bool) {
+	kill := false
+	for i:=0; i<50; i++ {
+		time.Sleep(CONN_TIMEOUT / 50)
+		select {
+		case kill = <-killChan:
+		default:
+		}
+		if kill { return }
+	}
+
+	// Time ran out, quit program having failed to connect
+	fmt.Printf(" [ERROR] Failed to connect to the database. Please check the connection and try again.\n")
+	os.Exit(1)
 }
 
 /// USER FUNCTIONS: ///
@@ -130,11 +157,14 @@ func InsertUser(user *User) error {
 		return EmailInUseError(user.Email)
 	}
 
-	_, err = Database.Query("INSERT INTO `tbl_user` (email, password, name) VALUES(?, PASSWORD(?), ?)", user.Email, user.Password, user.Name)
+	_, err = Database.Query("INSERT INTO `tbl_user` (email, password, name) VALUES(?, SHA1(UNHEX(SHA1(?))), ?)", user.Email, user.Password, user.Name)
 	if err != nil {
-		fmt.Println(" [ERROR] Query failed.")
+		fmt.Println(" [ERROR] Query failed:", err)
 		return err
 	}
+
+	loadClients()
+
 	return nil
 }
 
@@ -160,7 +190,7 @@ func UpdateUser(user *User) error {
 
 	if user.Password != "" {
 		noArgs = false
-		queryStr += "`password` = PASSWORD(?) ,"
+		queryStr += "`password` = SHA1(UNHEX(SHA1(?))) ,"
 		argArr = append(argArr, user.Password)
 	}
 

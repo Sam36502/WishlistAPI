@@ -1,0 +1,20 @@
+version: "3.5"
+services:
+  wishlist_api:
+    image: "wishlist_api"
+    environment:
+     - WISHLIST_DB_USERNAME=wishlist_user
+     - WISHLIST_DB_PASSWORD=jqXg-JCq%zWGFGsj9w&aBjQaE#f7cgCm
+     - WISHLIST_DB_DATABASE=wishlist
+     - WISHLIST_DB_HOSTNAME=wishlist_db
+    ports:
+     - 1323:1323
+  wishlist_db:
+    image: "mysql"
+    command: mysqld --default-authentication-plugin=mysql_native_password
+    environment:
+      - MYSQL_USER=wishlist_user
+      - MYSQL_PASSWORD=jqXg-JCq%zWGFGsj9w&aBjQaE#f7cgCm
+      - MYSQL_ROOT_PASSWORD=jqXg-JCq%zWGFGsj9w&aBjQaE#f7cgCm
+    volumes:
+      - ./dbscripts:/docker-entrypoint-initdb.d

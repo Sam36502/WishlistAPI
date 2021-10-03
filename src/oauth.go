@@ -96,16 +96,16 @@ func clientInfoHandler(r *http.Request) (clientID, clientSecret string, err erro
 	}
 
 	// Hash Password
-	rows, err := Database.Query("SELECT PASSWORD(?) AS `password`", password)
+	rows, err := Database.Query("SELECT SHA1(UNHEX(SHA1(?))) AS `password`", password)
 	if err != nil {
-		fmt.Println(" [ERROR] Query Failed. Failed to Hash Password.")
+		fmt.Println(" [ERROR] Query Failed. Failed to Hash Password while retrieving client info.")
 		return "", "", errors.ErrInvalidClient
 	}
 	hashedPassword := ""
 	rows.Next()
 	err = rows.Scan(&hashedPassword)
 	if err != nil {
-		fmt.Println(" [ERROR] Query Failed. Failed to retrieve hashed password.")
+		fmt.Println(" [ERROR] Query Failed. Failed to retrieve hashed password while retrieving client info.")
 		return "", "", errors.ErrInvalidClient
 	}
 
@@ -192,16 +192,17 @@ func createToken(c echo.Context) error {
 	}
 
 	// Hash Password
-	rows, err := Database.Query("SELECT PASSWORD(?) AS `password`", password)
+	rows, err := Database.Query("SELECT SHA1(UNHEX(SHA1(?)))", password)
 	if err != nil {
-		fmt.Println(" [ERROR] Query Failed. Failed to Hash Password.")
-		return c.String(http.StatusUnauthorized, "Failed to hash password. Aborted.")
+		fmt.Println(" [ERROR] Query Failed. Failed to Hash Password: ", err)
+		return c.String(http.StatusUnauthorized, "Failed to hash password while authenticating. Aborted.")
 	}
+	defer rows.Close()
 	hashedPassword := ""
 	rows.Next()
 	err = rows.Scan(&hashedPassword)
 	if err != nil {
-		fmt.Println(" [ERROR] Query Failed. Failed to retrieve hashed password.")
+		fmt.Println(" [ERROR] Query Failed. Failed to retrieve hashed password while authenticating.")
 		return c.String(http.StatusUnauthorized, "Failed to hash password. Aborted.")
 	}
 
