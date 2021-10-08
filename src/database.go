@@ -24,14 +24,15 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"time"
 	"os"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
 var Database *sql.DB
 var timerKillChannel = make(chan bool)
+var DatabaseConnected = false
 
 var (
 	USERNAME = os.Getenv("WISHLIST_DB_USERNAME")
@@ -60,17 +61,20 @@ func ConnectDB() {
 
 	fmt.Printf(" [INFO] Successfully connected to Database!\n")
 	Database.Exec("SET NAMES 'utf8mb4'")
+	DatabaseConnected = true
 }
 
 func DBConnTimer(killChan chan bool) {
 	kill := false
-	for i:=0; i<50; i++ {
+	for i := 0; i < 50; i++ {
 		time.Sleep(CONN_TIMEOUT / 50)
 		select {
 		case kill = <-killChan:
 		default:
 		}
-		if kill { return }
+		if kill {
+			return
+		}
 	}
 
 	// Time ran out, quit program having failed to connect
