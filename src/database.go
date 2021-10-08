@@ -32,7 +32,6 @@ import (
 
 var Database *sql.DB
 var timerKillChannel = make(chan bool)
-var DatabaseConnected = false
 
 var (
 	USERNAME = os.Getenv("WISHLIST_DB_USERNAME")
@@ -61,7 +60,12 @@ func ConnectDB() {
 
 	fmt.Printf(" [INFO] Successfully connected to Database!\n")
 	Database.Exec("SET NAMES 'utf8mb4'")
-	DatabaseConnected = true
+}
+
+// Pings database and returns true if it's online and can be connected to; otherwise false
+func IsDatabaseOnline() bool {
+	err := Database.Ping()
+	return err != nil
 }
 
 func DBConnTimer(killChan chan bool) {

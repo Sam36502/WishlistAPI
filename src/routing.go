@@ -55,7 +55,7 @@ func redirectToDocumentation(c echo.Context) error {
 
 func statusPage(c echo.Context) error {
 	dbStatus := "<td class='red'>FAILED</td>"
-	if DatabaseConnected {
+	if IsDatabaseOnline() {
 		dbStatus = "<td class='green'>CONNECTED</td>"
 	}
 
