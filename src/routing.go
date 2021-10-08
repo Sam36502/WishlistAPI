@@ -2,7 +2,9 @@ package main
 
 import (
 	"net/http"
+	"time"
 
+	externalip "github.com/glendc/go-external-ip"
 	"github.com/labstack/echo/v4"
 )
 
@@ -57,18 +59,18 @@ func statusPage(c echo.Context) error {
 	}
 
 	eaStatus := "<td class='red'>INACCESSIBLE</td>"
-	/*
-		consensus := externalip.DefaultConsensus(nil, nil)
-		ip, err := consensus.ExternalIP()
-		if err == nil {
-			resp, err := http.Get("http://" + ip.String() + ":1323/user")
-			defer resp.Body.Close()
-			if err == nil && resp.StatusCode == 200 {
-				eaStatus = "<td class='green'>ACCESSIBLE</td>"
-			}
-		}*/
+	consensus := externalip.DefaultConsensus(nil, nil)
+	ip, err := consensus.ExternalIP()
+	if err == nil {
+		client := http.Client{Timeout: 5 * time.Second}
+		resp, err := client.Get("http://" + ip.String() + ":1323/user")
+		defer resp.Body.Close()
+		if err == nil && resp.StatusCode == 200 {
+			eaStatus = "<td class='green'>ACCESSIBLE</td>"
+		}
+	}
 
-	return c.String(
+	return c.HTML(
 		http.StatusOK,
 		"<html><head><title>Wishlist API</title>"+
 			"<style>body {width: 50%;margin: auto;padding: 50px;} * {font-family: sans-serif;} .red {color: #FF0000;} .green {color: #00FF00}</style>"+
