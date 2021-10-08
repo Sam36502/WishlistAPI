@@ -8,7 +8,7 @@ help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 ## Builds the executable for linux
-build-linux:
+build:
 	@echo "---> Building Linux Executable"
 	@GOOS="linux" go build -o ${EXE_LINUX} ./src/
 
@@ -16,9 +16,6 @@ build-linux:
 build-win:
 	@echo "---> Building Windows Executable"
 	@GOOS="windows" go build -o ${EXE_WIN} ./src/
-
-## Builds all executable files
-build: build-linux build-win
 
 ## Builds the docker image
 image: build
