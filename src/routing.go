@@ -64,10 +64,10 @@ func statusPage(c echo.Context) error {
 	if err == nil {
 		client := http.Client{Timeout: 5 * time.Second}
 		resp, err := client.Get("http://" + ip.String() + ":1323/user")
-		defer resp.Body.Close()
 		if err == nil && resp.StatusCode == 200 {
 			eaStatus = "<td class='green'>ACCESSIBLE</td>"
 		}
+		resp.Body.Close()
 	}
 
 	return c.HTML(
