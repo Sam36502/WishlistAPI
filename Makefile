@@ -28,7 +28,7 @@ image: build
 ## Starts the docker-compose cluster
 up: image
 	@echo "---> Starting Compose Cluster"
-	@docker-compose up
+	@docker-compose up -d
 
 ## Stops the docker-compose cluster
 down:
