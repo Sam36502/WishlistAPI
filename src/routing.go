@@ -66,8 +66,8 @@ func statusPage(c echo.Context) error {
 		resp, err := client.Get("http://" + ip.String() + ":1323/user")
 		if err == nil && resp.StatusCode == 200 {
 			eaStatus = "<td class='green'>ACCESSIBLE</td>"
+			resp.Body.Close()
 		}
-		resp.Body.Close()
 	}
 
 	return c.HTML(
