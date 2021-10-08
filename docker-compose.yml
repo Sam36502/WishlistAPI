@@ -3,6 +3,7 @@ services:
   wishlist_api:
     image: "wishlist_api"
     environment:
+     - WISHLIST_API_PORTNUM=2512
      - WISHLIST_DB_USERNAME=wishlist_user
      - WISHLIST_DB_PASSWORD=jqXg-JCq%zWGFGsj9w&aBjQaE#f7cgCm
      - WISHLIST_DB_DATABASE=wishlist

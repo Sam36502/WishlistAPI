@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"os"
 	"time"
 
 	externalip "github.com/glendc/go-external-ip"
@@ -63,7 +64,7 @@ func statusPage(c echo.Context) error {
 	ip, err := consensus.ExternalIP()
 	if err == nil {
 		client := http.Client{Timeout: 1 * time.Second}
-		resp, err := client.Get("http://" + ip.String() + ":1323/user")
+		resp, err := client.Get("http://" + ip.String() + ":" + os.Getenv("WISHLIST_API_PORTNUM") + "/user")
 		if err == nil && resp.StatusCode == 200 {
 			eaStatus = "<td class='green'>ACCESSIBLE</td>"
 			resp.Body.Close()

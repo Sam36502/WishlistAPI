@@ -1,6 +1,8 @@
 package main
 
 import (
+	"os"
+
 	"github.com/labstack/echo/v4"
 )
 
@@ -12,5 +14,7 @@ func main() {
 	loadClients()
 	InitRoutes(e)
 
-	e.Logger.Fatal(e.Start(":1323"))
+	// Get Port from Environment
+
+	e.Logger.Fatal(e.Start(":" + os.Getenv("WISHLIST_API_PORTNUM")))
 }
