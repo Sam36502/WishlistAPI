@@ -14,7 +14,5 @@ func main() {
 	loadClients()
 	InitRoutes(e)
 
-	// Get Port from Environment
-
 	e.Logger.Fatal(e.Start(":" + os.Getenv("WISHLIST_API_PORTNUM")))
 }
