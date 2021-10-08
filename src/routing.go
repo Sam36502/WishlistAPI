@@ -71,7 +71,7 @@ func statusPage(c echo.Context) error {
 	return c.String(
 		http.StatusOK,
 		"<html><head><title>Wishlist API</title>"+
-			"<style>body {width: 50%;margin: auto;padding: 50px;} * {font-family: sans-serif;} .red {color: #FF0000;} .green {color: #00FF00}</style>"+
+			"<style>body {width: 50%;margin: auto;padding: 75px;} * {font-family: sans-serif;} .red {color: #FF0000;} .green {color: #00FF00}</style>"+
 			"</head><body><h1>Wishlist API</h1><h3>It's working!</h3><br><h3>Information:</h3><table>"+
 
 			"<tr><td>Database Connection:</td>"+dbStatus+"</tr>"+
