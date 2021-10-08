@@ -62,7 +62,7 @@ func statusPage(c echo.Context) error {
 	consensus := externalip.DefaultConsensus(nil, nil)
 	ip, err := consensus.ExternalIP()
 	if err == nil {
-		client := http.Client{Timeout: 5 * time.Second}
+		client := http.Client{Timeout: 1 * time.Second}
 		resp, err := client.Get("http://" + ip.String() + ":1323/user")
 		if err == nil && resp.StatusCode == 200 {
 			eaStatus = "<td class='green'>ACCESSIBLE</td>"
