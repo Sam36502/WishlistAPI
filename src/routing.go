@@ -3,7 +3,6 @@ package main
 import (
 	"net/http"
 
-	externalip "github.com/glendc/go-external-ip"
 	"github.com/labstack/echo/v4"
 )
 
@@ -58,20 +57,21 @@ func statusPage(c echo.Context) error {
 	}
 
 	eaStatus := "<td class='red'>INACCESSIBLE</td>"
-	consensus := externalip.DefaultConsensus(nil, nil)
-	ip, err := consensus.ExternalIP()
-	if err == nil {
-		resp, err := http.Get("http://" + ip.String() + ":1323/user")
-		defer resp.Body.Close()
-		if err == nil && resp.StatusCode == 200 {
-			eaStatus = "<td class='green'>ACCESSIBLE</td>"
-		}
-	}
+	/*
+		consensus := externalip.DefaultConsensus(nil, nil)
+		ip, err := consensus.ExternalIP()
+		if err == nil {
+			resp, err := http.Get("http://" + ip.String() + ":1323/user")
+			defer resp.Body.Close()
+			if err == nil && resp.StatusCode == 200 {
+				eaStatus = "<td class='green'>ACCESSIBLE</td>"
+			}
+		}*/
 
 	return c.String(
 		http.StatusOK,
 		"<html><head><title>Wishlist API</title>"+
-			"<style>body {width: 50%;margin: auto;padding: 75px;} * {font-family: sans-serif;} .red {color: #FF0000;} .green {color: #00FF00}</style>"+
+			"<style>body {width: 50%;margin: auto;padding: 50px;} * {font-family: sans-serif;} .red {color: #FF0000;} .green {color: #00FF00}</style>"+
 			"</head><body><h1>Wishlist API</h1><h3>It's working!</h3><br><h3>Information:</h3><table>"+
 
 			"<tr><td>Database Connection:</td>"+dbStatus+"</tr>"+
