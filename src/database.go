@@ -65,7 +65,7 @@ func ConnectDB() {
 // Pings database and returns true if it's online and can be connected to; otherwise false
 func IsDatabaseOnline() bool {
 	err := Database.Ping()
-	return err != nil
+	return err == nil
 }
 
 func DBConnTimer(killChan chan bool) {
