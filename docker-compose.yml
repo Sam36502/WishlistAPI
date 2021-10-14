@@ -8,6 +8,8 @@ services:
      - WISHLIST_DB_PASSWORD=jqXg-JCq%zWGFGsj9w&aBjQaE#f7cgCm
      - WISHLIST_DB_DATABASE=wishlist
      - WISHLIST_DB_HOSTNAME=wishlist_db
+     - WISHLIST_SSL_CERT=/etc/letsencrypt/live/www.pearcenet.ch/cert.pem
+     - WISHLIST_SSL_KEY=/etc/letsencrypt/live/www.pearcenet.ch/privkey.pem
     ports:
      - 2512:2512
   wishlist_db:
