@@ -9,27 +9,27 @@ help:
 
 ## Builds the executable for linux
 build:
-	@echo "---> Building Linux Executable"
+	@echo "### Building Linux Executable ###"
 	@GOOS="linux" go build -o ${EXE_LINUX} ./src/
 
 ## Builds the executable for windows
 build-win:
-	@echo "---> Building Windows Executable"
+	@echo "### Building Windows Executable ###"
 	@GOOS="windows" go build -o ${EXE_WIN} ./src/
 
 ## Builds the docker image
 image: build
-	@echo "---> Building Docker Image"
+	@echo "### Building Docker Image ###"
 	@docker build -t ${DOCKER_IMAGE} .
 
 ## Starts the docker-compose cluster
 up: image
-	@echo "---> Starting Compose Cluster"
+	@echo "### Starting Compose Cluster ###"
 	@docker-compose up -d
 
 ## Stops the docker-compose cluster
 down:
-	@echo "---> Stopping Compose Cluster"
+	@echo "### Stopping Compose Cluster ###"
 	@docker-compose down
 	@docker-compose rm -f
 
