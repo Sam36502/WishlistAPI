@@ -2,7 +2,7 @@ EXE_LINUX = "api_linux"
 EXE_WIN = "api_win.exe"
 DOCKER_IMAGE = "wishlist_api"
 CONTAINER_NAME ="wishlist_api"
-CERT_DIR = "/etc/letsencryt/live/www.pearcenet.ch"
+CERT_DIR = "/etc/letsencrypt/live/www.pearcenet.ch"
 
 .PHONY: help
 help:
