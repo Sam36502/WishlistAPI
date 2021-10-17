@@ -10,8 +10,6 @@ services:
      - WISHLIST_DB_PASSWORD=jqXg-JCq%zWGFGsj9w&aBjQaE#f7cgCm
      - WISHLIST_DB_DATABASE=wishlist
      - WISHLIST_DB_HOSTNAME=wishlist_db
-     - WISHLIST_SSL_CERT=/certs/fullchain.pem
-     - WISHLIST_SSL_KEY=/certs/privkey.pem
     volumes:
      - /etc/letsencrypt/live/www.pearcenet.ch:/certs
   wishlist_db:
