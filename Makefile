@@ -34,7 +34,9 @@ get-certs: clean-certs
 image: build get-certs
 	@echo "### Building Docker Image ###"
 	@docker build -t ${DOCKER_IMAGE} .
-	clean-certs
+
+## Builds docker image and cleans cert dir
+image-clean: image clean-certs
 
 ## Starts the docker-compose cluster
 up: image
