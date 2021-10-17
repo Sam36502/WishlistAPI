@@ -20,3 +20,4 @@ services:
       - MYSQL_ROOT_PASSWORD=jqXg-JCq%zWGFGsj9w&aBjQaE#f7cgCm
     volumes:
       - ./dbscripts:/docker-entrypoint-initdb.d
+      - /var/wishlist_api/mysql:/var/lib/mysql
