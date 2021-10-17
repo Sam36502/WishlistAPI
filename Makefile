@@ -39,7 +39,7 @@ image: build get-certs
 image-clean: image clean-certs
 
 ## Starts the docker-compose cluster
-up: image
+up: image-clean
 	@echo "### Starting Compose Cluster ###"
 	@docker-compose up -d
 
