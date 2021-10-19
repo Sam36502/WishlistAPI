@@ -49,7 +49,7 @@ func InitRoutes(e *echo.Echo) {
 }
 
 func redirectToDocumentation(c echo.Context) error {
-	return c.Redirect(http.StatusMovedPermanently, "https://www.pearcenet.ch/wishlist/doc.html")
+	return c.Redirect(http.StatusMovedPermanently, "https://www.pearcenet.ch/wishlist/doc")
 }
 
 func statusPage(c echo.Context) error {
