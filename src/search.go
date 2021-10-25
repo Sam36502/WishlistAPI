@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"strings"
 
 	"github.com/labstack/echo/v4"
 	"go.deanishe.net/fuzzy"
@@ -31,6 +32,7 @@ func SearchUsers(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "Bad Request. 'search' query parameter required.")
 	}
 	query := c.QueryParam("search")
+	query = strings.ToLower(query)
 
 	// Get all users with the query in their names
 	allUsers, err := GetUsersByNameOrEmail(query)
