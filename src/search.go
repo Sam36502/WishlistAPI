@@ -27,10 +27,10 @@ func (u UserList) Less(i, j int) bool {
 func SearchUsers(c echo.Context) error {
 
 	// Get Search Query
-	if !c.QueryParams().Has("s") {
-		return c.String(http.StatusBadRequest, "Bad Request. 's' query parameter required.")
+	if !c.QueryParams().Has("search") {
+		return c.String(http.StatusBadRequest, "Bad Request. 'search' query parameter required.")
 	}
-	query := c.QueryParam("s")
+	query := c.QueryParam("search")
 
 	// Get all users with the query in their names
 	allUsers, err := GetUsersByNameOrEmail(query)
