@@ -494,7 +494,7 @@ func DeleteItem(id uint64) error {
 // Returns a list of users with the provided substring in their email or name
 func GetUsersByNameOrEmail(name string) ([]*User, error) {
 	wildcardName := "%" + name + "%"
-	rows, err := Database.Query("SELECT * FROM `tbl_user` WHERE LOWER(email) LIKE '?' OR LOWER(name) LIKE '?'", wildcardName, wildcardName)
+	rows, err := Database.Query("SELECT * FROM `tbl_user` WHERE LOWER(email) LIKE ? OR LOWER(name) LIKE ?", wildcardName, wildcardName)
 	if err != nil {
 		fmt.Println(" [ERROR] Query Failed:", err)
 		return nil, err
