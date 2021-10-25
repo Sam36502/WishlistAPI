@@ -24,6 +24,7 @@ func InitRoutes(e *echo.Echo) {
 	// User
 	e.POST("/user", createUser)
 	e.GET("/user", readAllUsers)
+	e.GET("/user/search", SearchUsers)
 	e.GET("/user/:user_id", readUser)
 
 	// Items
@@ -49,7 +50,7 @@ func InitRoutes(e *echo.Echo) {
 }
 
 func redirectToDocumentation(c echo.Context) error {
-	return c.Redirect(http.StatusMovedPermanently, "https://www.pearcenet.ch/wishlist/doc")
+	return c.Redirect(http.StatusMovedPermanently, "https://www.pearcenet.ch/wishlist/doc/")
 }
 
 func statusPage(c echo.Context) error {

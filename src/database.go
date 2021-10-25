@@ -487,3 +487,28 @@ func DeleteItem(id uint64) error {
 	}
 	return nil
 }
+
+/// MISC FUNCTIONS
+// GetUsersByNameOrEmail(name) []User, error
+
+// Returns a list of users with the provided substring in their email or name
+func GetUsersByNameOrEmail(name string) ([]*User, error) {
+	rows, err := Database.Query("SELECT * FROM `tbl_user` WHERE LOWER(email) LIKE '%?%' OR LOWER(name) LIKE '%?%'", name, name)
+	if err != nil {
+		fmt.Println(" [ERROR] Query Failed:", err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	userArr := make([]*User, 0)
+	for rows.Next() {
+		parsedUser := User{}
+		err = rows.Scan(&parsedUser.UserID, &parsedUser.Email, &parsedUser.Password, &parsedUser.Domain, &parsedUser.Name)
+		if err != nil {
+			fmt.Println(" [ERROR] Parsing Failed:", err)
+			return nil, err
+		}
+		userArr = append(userArr, &parsedUser)
+	}
+	return userArr, nil
+}
