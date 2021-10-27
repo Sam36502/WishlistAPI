@@ -129,5 +129,12 @@ func userByEmail(c echo.Context) error {
 		return c.String(http.StatusInternalServerError, "Failed to retrieve user.")
 	}
 
-	return c.JSON(http.StatusOK, user)
+	userDTO := UserDTO{
+		UserID: user.UserID,
+		Email:  user.Email,
+		Domain: user.Domain,
+		Name:   user.Name,
+	}
+
+	return c.JSON(http.StatusOK, userDTO)
 }
