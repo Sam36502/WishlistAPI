@@ -35,7 +35,7 @@ func SearchUsers(c echo.Context) error {
 	query = strings.ToLower(query)
 
 	// Get all users with the query in their names
-	allUsers, err := GetUsersByNameOrEmail(query)
+	allUsers, err := SearchUsersByNameOrEmail(query)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "Failed to retrieve users.")
 	}

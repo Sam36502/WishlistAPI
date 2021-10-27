@@ -116,3 +116,18 @@ func deleteUser(c echo.Context) error {
 
 	return c.String(http.StatusOK, "User successfully deleted.")
 }
+
+func userByEmail(c echo.Context) error {
+	if !c.QueryParams().Has("email") {
+		return c.String(http.StatusBadRequest, "Required query parameter 'email' is missing.")
+	}
+
+	email := c.QueryParam("email")
+
+	user, err := GetUserWithEmail(email)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, "Failed to retrieve user.")
+	}
+
+	return c.JSON(http.StatusOK, user)
+}

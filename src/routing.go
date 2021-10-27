@@ -26,6 +26,7 @@ func InitRoutes(e *echo.Echo) {
 	e.GET("/user", readAllUsers)
 	e.GET("/user/search", SearchUsers)
 	e.GET("/user/:user_id", readUser)
+	e.GET("/user/email", userByEmail)
 
 	// Items
 	e.GET("/user/:user_id/list", readAllItems)
