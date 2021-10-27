@@ -91,6 +91,13 @@ func updateUser(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "Invalid User format received.")
 	}
 
+	// Get ID from URL
+	id, err := strconv.Atoi(c.Param("user_id"))
+	if err != nil {
+		return c.String(http.StatusBadRequest, "Invalid User ID provided: "+c.Param("user_id"))
+	}
+	user.UserID = uint64(id)
+
 	err = UpdateUser(user)
 	if err != nil {
 		if err == EmailInUseError(user.Email) {
