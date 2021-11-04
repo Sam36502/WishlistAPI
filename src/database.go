@@ -262,7 +262,7 @@ func GetAllItems(userID uint64) ([]*Item, error) {
 		"FROM `tbl_item` i "+
 		"JOIN `tbl_status` s ON i.status_id = s.id_status "+
 		"JOIN `tbl_user` u ON i.user_id = u.id_user "+
-		"WHERE u.id_user = ?", userID)
+		"WHERE u.id_user = ? ORDER BY i.id_item", userID)
 	if err != nil {
 		fmt.Println(" [ERROR] Query Failed:", err)
 		return nil, err
