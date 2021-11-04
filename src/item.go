@@ -76,7 +76,7 @@ func readItem(c echo.Context) error {
 	}
 	item, err := GetItemWithID(uint64(id))
 	if err != nil {
-		return c.String(http.StatusInternalServerError, "Failed to retreve item.")
+		return c.String(http.StatusNotFound, "Item not found.")
 	}
 	return c.JSON(http.StatusOK, item)
 }
