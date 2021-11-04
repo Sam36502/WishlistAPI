@@ -46,7 +46,7 @@ func InitRoutes(e *echo.Echo) {
 	// Item
 	e.POST("/user/:user_id/list", createItem, TokenValidator, AuthValidator)
 	e.PUT("/user/:user_id/list/:item_id", updateItem, TokenValidator, AuthValidator)
-	e.DELETE("/user/:user_id/list/:item_id", deleteItem, TokenValidator, AuthValidator)
+	e.DELETE("/item/:item_id", deleteItem, TokenValidator, AuthValidator)
 
 }
 
