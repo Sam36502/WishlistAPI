@@ -9,7 +9,7 @@ import (
 )
 
 type Status struct {
-	StatusID    uint64 `json:"status_id`
+	StatusID    uint64 `json:"status_id"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
 }
@@ -21,7 +21,7 @@ type Link struct {
 }
 
 type Item struct {
-	ItemID      uint64  `json:"item_id`
+	ItemID      uint64  `json:"item_id"`
 	Name        string  `json:"name"`
 	Description string  `json:"description"`
 	Status      Status  `json:"status"`
