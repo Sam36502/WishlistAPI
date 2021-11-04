@@ -9,25 +9,25 @@ import (
 )
 
 type Status struct {
-	StatusID    uint64
-	Name        string
-	Description string
+	StatusID    uint64 `json:"status_id`
+	Name        string `json:"name"`
+	Description string `json:"description"`
 }
 
 type Link struct {
-	LinkID    uint64
-	Text      string
-	Hyperlink string
+	LinkID    uint64 `json:"link_id"`
+	Text      string `json:"text"`
+	Hyperlink string `json:"hyperlink"`
 }
 
 type Item struct {
-	ItemID      uint64
-	Name        string
-	Description string
-	Status      Status
-	Price       int
-	User        UserDTO // Using the DTO, because Item doesn't need the password and shouldn't display it
-	Links       []Link
+	ItemID      uint64  `json:"item_id`
+	Name        string  `json:"name"`
+	Description string  `json:"description"`
+	Status      Status  `json:"status"`
+	Price       int     `json:"price"`
+	User        UserDTO `json:"user"` // Using the DTO, because Item doesn't need the password and shouldn't display it
+	Links       []Link  `json:"links"`
 }
 
 func readAllItems(c echo.Context) error {
