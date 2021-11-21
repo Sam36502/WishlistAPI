@@ -325,7 +325,7 @@ func GetAllItems(userID uint64) ([]*Item, error) {
 func GetItemWithID(id uint64) (*Item, error) {
 	// Get All Items
 	rows, err := Database.Query("SELECT "+
-		"i.id_item, i.name, i.desc, i.price, "+
+		"i.id_item, i.name, i.desc, i.price, i.reserved_by_user_id, "+
 		"s.id_status, s.name, s.desc, "+
 		"u.id_user, u.email, u.domain, u.name "+
 		"FROM `tbl_item` i "+
@@ -340,12 +340,14 @@ func GetItemWithID(id uint64) (*Item, error) {
 
 	// Parse Items
 	parsedItem := Item{}
+	var reservedByUserID sql.NullInt64
 	rows.Next()
 	err = rows.Scan(
 		&parsedItem.ItemID,
 		&parsedItem.Name,
 		&parsedItem.Description,
 		&parsedItem.Price,
+		&reservedByUserID,
 		&parsedItem.Status.StatusID,
 		&parsedItem.Status.Name,
 		&parsedItem.Status.Description,
@@ -357,6 +359,31 @@ func GetItemWithID(id uint64) (*Item, error) {
 	if err != nil {
 		fmt.Println(" [ERROR] Parsing Failed:", err)
 		return nil, err
+	}
+
+	// Get Reserved-By User if Present
+	if reservedByUserID.Valid {
+		rows, err := Database.Query("SELECT "+
+			"u.id_user, u.email, u.domain, u.name "+
+			"FROM `tbl_user` WHERE id_user = ?", reservedByUserID.Int64)
+		if err != nil {
+			fmt.Println(" [ERROR] Query Failed:", err)
+			return nil, err
+		}
+		defer rows.Close()
+		rows.Next()
+		err = rows.Scan(
+			&parsedItem.ReservedByUser.UserID,
+			&parsedItem.ReservedByUser.Email,
+			&parsedItem.ReservedByUser.Domain,
+			&parsedItem.ReservedByUser.Name,
+		)
+		if err != nil {
+			fmt.Println(" [ERROR] Parsing Failed:", err)
+			return nil, err
+		}
+	} else {
+		parsedItem.ReservedByUser = UserDTO{}
 	}
 
 	// Get Links
