@@ -257,7 +257,7 @@ func GetAllItems(userID uint64) ([]*Item, error) {
 
 	// Get All Items
 	rows, err := Database.Query("SELECT "+
-		"i.id_item, i.name, i.desc, i.price, "+
+		"i.id_item, i.name, i.desc, i.price, i.reserved_by_user_id, "+
 		"s.id_status, s.name, s.desc, "+
 		"u.id_user, u.email, u.domain, u.name "+
 		"FROM `tbl_item` i "+
@@ -272,6 +272,7 @@ func GetAllItems(userID uint64) ([]*Item, error) {
 
 	// Parse Items
 	itemArr := make([]*Item, 0)
+	var reservedByUserID sql.NullInt64
 	for rows.Next() {
 		parsedItem := Item{}
 		err = rows.Scan(
@@ -279,6 +280,7 @@ func GetAllItems(userID uint64) ([]*Item, error) {
 			&parsedItem.Name,
 			&parsedItem.Description,
 			&parsedItem.Price,
+			&reservedByUserID,
 			&parsedItem.Status.StatusID,
 			&parsedItem.Status.Name,
 			&parsedItem.Status.Description,
@@ -290,6 +292,32 @@ func GetAllItems(userID uint64) ([]*Item, error) {
 		if err != nil {
 			fmt.Println(" [ERROR] Parsing Failed:", err)
 			return nil, err
+		}
+
+		// Get Reserved-By User if Present
+		if reservedByUserID.Valid {
+			rows, err := Database.Query("SELECT "+
+				"id_user, email, domain, name "+
+				"FROM `tbl_user` WHERE id_user = ?", reservedByUserID.Int64)
+			if err != nil {
+				fmt.Println(" [ERROR] Query Failed:", err)
+				return nil, err
+			}
+			defer rows.Close()
+			rows.Next()
+			parsedItem.ReservedByUser = &UserDTO{}
+			err = rows.Scan(
+				&parsedItem.ReservedByUser.UserID,
+				&parsedItem.ReservedByUser.Email,
+				&parsedItem.ReservedByUser.Domain,
+				&parsedItem.ReservedByUser.Name,
+			)
+			if err != nil {
+				fmt.Println(" [ERROR] Parsing Failed:", err)
+				return nil, err
+			}
+		} else {
+			parsedItem.ReservedByUser = nil
 		}
 
 		// Get Links
@@ -472,6 +500,12 @@ func UpdateItem(item *Item) error {
 		noArgs = false
 		queryStr += "`price` = ? ,"
 		argArr = append(argArr, item.Price)
+	}
+
+	if *item.ReservedByUser != (UserDTO{}) {
+		noArgs = false
+		queryStr += "`reserved_by_user_id` = ? ,"
+		argArr = append(argArr, item.ReservedByUser.UserID)
 	}
 
 	queryStr = queryStr[:len(queryStr)-1]
