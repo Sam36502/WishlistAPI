@@ -150,3 +150,40 @@ func reserveItem(c echo.Context) error {
 	}
 	return c.NoContent(http.StatusOK)
 }
+
+func unreserveItem(c echo.Context) error {
+	idSigned, err := strconv.ParseInt(c.Param("item_id"), 10, 64)
+	if err != nil {
+		return c.String(http.StatusBadRequest, "Invalid Item ID provided: \""+c.Param("item_id")+"\"")
+	}
+	item_id := uint64(idSigned)
+
+	// Get the user whose unreserving the item
+	clientEmail := fmt.Sprint(c.Get("client_id"))
+	loggedInUser, err := GetUserWithEmail(clientEmail)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, "Invalid User logged in: "+clientEmail)
+	}
+
+	item, err := GetItemWithID(item_id)
+	if err != nil {
+		return c.NoContent(http.StatusNotFound)
+	}
+
+	// Another user is trying to unreserve the item
+	if item.ReservedByUser.UserID != loggedInUser.UserID {
+		return c.NoContent(http.StatusForbidden)
+	}
+
+	err = UpdateItem(&Item{
+		ItemID: item_id,
+		Status: Status{
+			StatusID: 1,
+		},
+		ReservedByUser: nil,
+	})
+	if err != nil {
+		return echo.ErrInternalServerError
+	}
+	return c.NoContent(http.StatusOK)
+}

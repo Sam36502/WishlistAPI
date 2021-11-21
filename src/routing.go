@@ -47,7 +47,8 @@ func InitRoutes(e *echo.Echo) {
 	e.POST("/user/:user_id/list", createItem, TokenValidator, AuthValidator)
 	e.PUT("/user/:user_id/list/:item_id", updateItem, TokenValidator, AuthValidator)
 	e.DELETE("/user/:user_id/list/:item_id", deleteItem, TokenValidator, AuthValidator)
-	e.PUT("/user/:user_id/list/:item_id/reserve", reserveItem, TokenValidator) // Note: Doesn't use AuthValidator, because other users can set it, but they still need to be logged in
+	e.PUT("/user/:user_id/list/:item_id/reserve", reserveItem, TokenValidator)     // Note: Doesn't use AuthValidator, because other users can set it, but they still need to be logged in
+	e.PUT("/user/:user_id/list/:item_id/unreserve", unreserveItem, TokenValidator) // Note: Doesn't use AuthValidator, because other users can set it, but they still need to be logged in
 
 }
 
