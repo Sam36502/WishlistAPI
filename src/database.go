@@ -364,7 +364,7 @@ func GetItemWithID(id uint64) (*Item, error) {
 	// Get Reserved-By User if Present
 	if reservedByUserID.Valid {
 		rows, err := Database.Query("SELECT "+
-			"u.id_user, u.email, u.domain, u.name "+
+			"id_user, email, domain, name "+
 			"FROM `tbl_user` WHERE id_user = ?", reservedByUserID.Int64)
 		if err != nil {
 			fmt.Println(" [ERROR] Query Failed:", err)
