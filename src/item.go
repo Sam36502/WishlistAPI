@@ -144,6 +144,7 @@ func reserveItem(c echo.Context) error {
 		ReservedByUser: &UserDTO{
 			UserID: loggedInUser.UserID,
 		},
+		Price: -1, // Must be specifically set to not delete price
 	})
 	if err != nil {
 		return echo.ErrInternalServerError
@@ -181,6 +182,7 @@ func unreserveItem(c echo.Context) error {
 			StatusID: 1,
 		},
 		ReservedByUser: nil,
+		Price:          -1, // Must be specifically set to not delete price
 	})
 	if err != nil {
 		return echo.ErrInternalServerError
