@@ -383,7 +383,7 @@ func GetItemWithID(id uint64) (*Item, error) {
 			return nil, err
 		}
 	} else {
-		parsedItem.ReservedByUser = UserDTO{}
+		parsedItem.ReservedByUser = nil
 	}
 
 	// Get Links

@@ -21,14 +21,14 @@ type Link struct {
 }
 
 type Item struct {
-	ItemID         uint64  `json:"item_id"`
-	Name           string  `json:"name"`
-	Description    string  `json:"description"`
-	ReservedByUser UserDTO `json:"reserved_by"`
-	Status         Status  `json:"status"`
-	Price          int     `json:"price"`
-	User           UserDTO `json:"user"` // Using the DTO, because Item doesn't need the password and shouldn't display it
-	Links          []Link  `json:"links"`
+	ItemID         uint64   `json:"item_id"`
+	Name           string   `json:"name"`
+	Description    string   `json:"description"`
+	ReservedByUser *UserDTO `json:"reserved_by,omitempty"`
+	Status         Status   `json:"status"`
+	Price          int      `json:"price"`
+	User           UserDTO  `json:"user"` // Using the DTO, because Item doesn't need the password and shouldn't display it
+	Links          []Link   `json:"links"`
 }
 
 func readAllItems(c echo.Context) error {
