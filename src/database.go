@@ -505,7 +505,6 @@ func UpdateItem(item *Item) error {
 	if item.ReservedByUser == nil {
 		noArgs = false
 		queryStr += "`reserved_by_user_id` = NULL ,"
-		argArr = append(argArr, item.ReservedByUser.UserID)
 	} else if *item.ReservedByUser != (UserDTO{}) {
 		noArgs = false
 		queryStr += "`reserved_by_user_id` = ? ,"
