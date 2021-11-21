@@ -372,6 +372,7 @@ func GetItemWithID(id uint64) (*Item, error) {
 		}
 		defer rows.Close()
 		rows.Next()
+		parsedItem.ReservedByUser = &UserDTO{}
 		err = rows.Scan(
 			&parsedItem.ReservedByUser.UserID,
 			&parsedItem.ReservedByUser.Email,
