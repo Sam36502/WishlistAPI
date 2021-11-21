@@ -215,6 +215,7 @@ func UpdateUser(user *User) error {
 	}
 
 	if noArgs {
+		fmt.Println("[INFO] User '" + user.Email + "' tried to update their user info with no arguments.")
 		return nil
 	}
 
@@ -456,6 +457,8 @@ func UpdateItem(item *Item) error {
 			fmt.Println(" [ERROR] Query failed:", err)
 			return err
 		}
+	} else {
+		fmt.Println("[INFO] User tried to update Item '" + item.Name + "' with no arguments.")
 	}
 
 	// Drop all links for this item and add the ones provided
