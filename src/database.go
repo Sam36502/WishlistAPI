@@ -502,13 +502,13 @@ func UpdateItem(item *Item) error {
 		argArr = append(argArr, item.Price)
 	}
 
-	if *item.ReservedByUser != (UserDTO{}) {
+	if item.ReservedByUser == nil {
 		noArgs = false
-		if item.ReservedByUser == nil {
-			queryStr += "`reserved_by_user_id` = NULL ,"
-		} else {
-			queryStr += "`reserved_by_user_id` = ? ,"
-		}
+		queryStr += "`reserved_by_user_id` = NULL ,"
+		argArr = append(argArr, item.ReservedByUser.UserID)
+	} else if *item.ReservedByUser != (UserDTO{}) {
+		noArgs = false
+		queryStr += "`reserved_by_user_id` = ? ,"
 		argArr = append(argArr, item.ReservedByUser.UserID)
 	}
 
