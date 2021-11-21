@@ -129,10 +129,20 @@ func reserveItem(c echo.Context) error {
 	}
 	item_id := uint64(idSigned)
 
+	// Get the user whose reserving the item
+	clientEmail := fmt.Sprint(c.Get("client_id"))
+	loggedInUser, err := GetUserWithEmail(clientEmail)
+	if err != nil {
+		return c.String(http.StatusInternalServerError, "Invalid User logged in: "+clientEmail)
+	}
+
 	err = UpdateItem(&Item{
 		ItemID: item_id,
 		Status: Status{
 			StatusID: 2,
+		},
+		ReservedByUser: &UserDTO{
+			UserID: loggedInUser.UserID,
 		},
 	})
 	if err != nil {
