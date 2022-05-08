@@ -50,7 +50,7 @@ func ConnectDB() {
 	var err error
 	go DBConnTimer(timerKillChannel)
 	for {
-		Database, err = sql.Open("mysql", dataSourceStr)
+		Database, _ = sql.Open("mysql", dataSourceStr)
 		err = Database.Ping()
 		if err == nil {
 			timerKillChannel <- true
@@ -171,8 +171,6 @@ func InsertUser(user *User) error {
 		return err
 	}
 
-	loadClients()
-
 	return nil
 }
 
@@ -228,9 +226,6 @@ func UpdateUser(user *User) error {
 		fmt.Println(" [ERROR] Query failed:", err)
 		return err
 	}
-
-	// Reload clients, because names and passwords may have changed
-	loadClients()
 
 	return nil
 }
