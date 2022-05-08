@@ -11,7 +11,6 @@ CREATE TABLE `tbl_user` (
   `id_user` int(11) NOT NULL AUTO_INCREMENT,
   `email` varchar(128) NOT NULL,
   `password` varchar(128) NOT NULL,
-  `domain` varchar(255) NOT NULL DEFAULT 'http://localhost',
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id_user`),
   UNIQUE KEY `id_user` (`id_user`),
