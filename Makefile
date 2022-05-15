@@ -18,30 +18,15 @@ build-win:
 	@echo "### Building Windows Executable ###"
 	@GOOS="windows" go build -o ${EXE_WIN} ./src/
 
-## cleans certs directory
-clean-certs:
-	@echo "### Cleaning Certs Directory ###"
-	@rm -rf ./certs
-
-## Gets the SSL files and puts them in certs directory for Docker
-get-certs: clean-certs
-	@echo "### Getting Certificate Files ###"
-	@mkdir ./certs
-	@cp ${CERT_DIR}/fullchain.pem ./certs/fullchain.pem
-	@cp ${CERT_DIR}/privkey.pem ./certs/privkey.pem
-
 ## Builds the docker image
-image: build get-certs
+image: build
 	@echo "### Building Docker Image ###"
 	@docker build -t ${DOCKER_IMAGE} .
 
-## Builds docker image and cleans cert dir
-image-clean: image clean-certs
-
 ## Starts the docker-compose cluster
-up: image-clean
+up: image
 	@echo "### Starting Compose Cluster ###"
-	@docker-compose up -d
+	@sudo docker-compose up -d
 
 ## Stops the docker-compose cluster
 down:

@@ -39,21 +39,27 @@ func tokenHandler(c echo.Context) error {
 	var authreq AuthRequestDTO
 	err := c.Bind(&authreq)
 	if err != nil {
-		// TODO: Make formatted consistent error messages
-		return c.String(http.StatusBadRequest, "Invalid auth request format.")
+		return &echo.HTTPError{
+			Code:    http.StatusBadRequest,
+			Message: "Invalid auth request format.",
+		}
 	}
 
 	// Find User details
 	usr, err := GetUserWithEmail(authreq.Email)
 	if err != nil {
-		// TODO: Make formatted consistent error messages
-		return c.String(http.StatusNotFound, "No user with that e-mail address found.")
+		return &echo.HTTPError{
+			Code:    http.StatusNotFound,
+			Message: "No user with that e-mail address found.",
+		}
 	}
 
 	// Check auth details are valid
 	if usr.Password != authreq.Password {
-		// TODO: Make formatted consistent error messages
-		return c.String(http.StatusUnauthorized, "Invalid credentials provided.")
+		return &echo.HTTPError{
+			Code:    http.StatusUnauthorized,
+			Message: "Invalid credentials provided",
+		}
 	}
 
 	// Hash Token
@@ -61,9 +67,10 @@ func tokenHandler(c echo.Context) error {
 	tok := generateToken(authreq.Email, expiry)
 	signd, err := tok.SignedString([]byte(os.Getenv(ENV_SIGNING_KEY)))
 	if err != nil {
-		// TODO: Make formatted consistent error messages
-		fmt.Println("Err:", err)
-		return c.String(http.StatusUnauthorized, "Failed to hash the token")
+		return &echo.HTTPError{
+			Code:    http.StatusInternalServerError,
+			Message: fmt.Sprintf("Failed to create token:\n  %s\n", err),
+		}
 	}
 
 	return c.JSON(http.StatusOK, AuthResponseDTO{
