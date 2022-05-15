@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/golang-jwt/jwt"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -28,8 +28,8 @@ type AuthResponseDTO struct {
 }
 
 type TokenClaims struct {
-	jwt.StandardClaims
 	Email string `json:"email"`
+	jwt.StandardClaims
 }
 
 // Handler to receive authentication requests and return tokens
@@ -113,6 +113,7 @@ func generateToken(email string, expiresAt int64) *jwt.Token {
 
 // Middleware to check if a token is valid
 var TokenValidator = middleware.JWTWithConfig(middleware.JWTConfig{
+	Claims:     &TokenClaims{},
 	SigningKey: []byte(os.Getenv(ENV_SIGNING_KEY)),
 })
 
@@ -120,13 +121,19 @@ var TokenValidator = middleware.JWTWithConfig(middleware.JWTConfig{
 func AuthValidator(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 
-		// Get currently logged in user's ID
-		user := c.Get("user").(*jwt.Token)
-		claims, ok := user.Claims.(*TokenClaims)
+		// Get currently logged in token's ID
+		token, ok := c.Get("user").(*jwt.Token)
 		if !ok {
 			return &echo.HTTPError{
 				Code:    http.StatusInternalServerError,
-				Message: "Failed to parse logged in user info from JWT.",
+				Message: "Failed to retrieve JWT data from middleware.",
+			}
+		}
+		claims, ok := token.Claims.(TokenClaims)
+		if !ok {
+			return &echo.HTTPError{
+				Code:    http.StatusInternalServerError,
+				Message: "Failed to retrieve user claims from middleware JWT",
 			}
 		}
 		loggedInUser, err := GetUserWithEmail(claims.Email)
