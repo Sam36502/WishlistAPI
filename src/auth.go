@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/golang-jwt/jwt/v4"
+	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -129,7 +129,7 @@ func AuthValidator(next echo.HandlerFunc) echo.HandlerFunc {
 				Message: "Failed to retrieve JWT data from middleware.",
 			}
 		}
-		claims, ok := token.Claims.(TokenClaims)
+		claims, ok := token.Claims.(*TokenClaims)
 		if !ok {
 			return &echo.HTTPError{
 				Code:    http.StatusInternalServerError,
