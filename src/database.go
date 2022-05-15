@@ -50,7 +50,7 @@ func ConnectDB() {
 	var err error
 	go DBConnTimer(timerKillChannel)
 	for {
-		Database, err = sql.Open("mysql", dataSourceStr)
+		Database, _ = sql.Open("mysql", dataSourceStr)
 		err = Database.Ping()
 		if err == nil {
 			timerKillChannel <- true
@@ -106,7 +106,7 @@ func GetAllUsers() ([]*User, error) {
 	userArr := make([]*User, 0)
 	for rows.Next() {
 		parsedUser := User{}
-		err = rows.Scan(&parsedUser.UserID, &parsedUser.Email, &parsedUser.Password, &parsedUser.Domain, &parsedUser.Name)
+		err = rows.Scan(&parsedUser.UserID, &parsedUser.Email, &parsedUser.Password, &parsedUser.Name)
 		if err != nil {
 			fmt.Println(" [ERROR] Parsing Failed:", err)
 			return nil, err
@@ -127,7 +127,7 @@ func GetUserWithID(id uint64) (*User, error) {
 
 	parsedUser := User{}
 	rows.Next()
-	err = rows.Scan(&parsedUser.UserID, &parsedUser.Email, &parsedUser.Password, &parsedUser.Domain, &parsedUser.Name)
+	err = rows.Scan(&parsedUser.UserID, &parsedUser.Email, &parsedUser.Password, &parsedUser.Name)
 	if err != nil {
 		fmt.Println(" [ERROR] Parsing Failed:", err)
 		return nil, err
@@ -147,7 +147,7 @@ func GetUserWithEmail(email string) (*User, error) {
 
 	parsedUser := User{}
 	rows.Next()
-	err = rows.Scan(&parsedUser.UserID, &parsedUser.Email, &parsedUser.Password, &parsedUser.Domain, &parsedUser.Name)
+	err = rows.Scan(&parsedUser.UserID, &parsedUser.Email, &parsedUser.Password, &parsedUser.Name)
 	if err != nil {
 		fmt.Println(" [ERROR] Parsing Failed:", err)
 		return nil, err
@@ -170,8 +170,6 @@ func InsertUser(user *User) error {
 		fmt.Println(" [ERROR] Query failed:", err)
 		return err
 	}
-
-	loadClients()
 
 	return nil
 }
@@ -202,12 +200,6 @@ func UpdateUser(user *User) error {
 		argArr = append(argArr, user.Password)
 	}
 
-	if user.Domain != "" {
-		noArgs = false
-		queryStr += "`domain` = ? ,"
-		argArr = append(argArr, user.Domain)
-	}
-
 	if user.Name != "" {
 		noArgs = false
 		queryStr += "`name` = ? ,"
@@ -228,9 +220,6 @@ func UpdateUser(user *User) error {
 		fmt.Println(" [ERROR] Query failed:", err)
 		return err
 	}
-
-	// Reload clients, because names and passwords may have changed
-	loadClients()
 
 	return nil
 }
@@ -286,7 +275,6 @@ func GetAllItems(userID uint64) ([]*Item, error) {
 			&parsedItem.Status.Description,
 			&parsedItem.User.UserID,
 			&parsedItem.User.Email,
-			&parsedItem.User.Domain,
 			&parsedItem.User.Name,
 		)
 		if err != nil {
@@ -309,7 +297,6 @@ func GetAllItems(userID uint64) ([]*Item, error) {
 			err = rows.Scan(
 				&parsedItem.ReservedByUser.UserID,
 				&parsedItem.ReservedByUser.Email,
-				&parsedItem.ReservedByUser.Domain,
 				&parsedItem.ReservedByUser.Name,
 			)
 			if err != nil {
@@ -381,7 +368,6 @@ func GetItemWithID(id uint64) (*Item, error) {
 		&parsedItem.Status.Description,
 		&parsedItem.User.UserID,
 		&parsedItem.User.Email,
-		&parsedItem.User.Domain,
 		&parsedItem.User.Name,
 	)
 	if err != nil {
@@ -404,7 +390,6 @@ func GetItemWithID(id uint64) (*Item, error) {
 		err = rows.Scan(
 			&parsedItem.ReservedByUser.UserID,
 			&parsedItem.ReservedByUser.Email,
-			&parsedItem.ReservedByUser.Domain,
 			&parsedItem.ReservedByUser.Name,
 		)
 		if err != nil {
@@ -572,7 +557,7 @@ func SearchUsersByNameOrEmail(name string) ([]*User, error) {
 	userArr := make([]*User, 0)
 	for rows.Next() {
 		parsedUser := User{}
-		err = rows.Scan(&parsedUser.UserID, &parsedUser.Email, &parsedUser.Password, &parsedUser.Domain, &parsedUser.Name)
+		err = rows.Scan(&parsedUser.UserID, &parsedUser.Email, &parsedUser.Password, &parsedUser.Name)
 		if err != nil {
 			fmt.Println(" [ERROR] Parsing Failed:", err)
 			return nil, err

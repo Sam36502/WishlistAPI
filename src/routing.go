@@ -13,7 +13,7 @@ func InitRoutes(e *echo.Echo) {
 	/// PUBLIC ROUTES: ///
 
 	// Add the token endpoint so users can get a token
-	e.POST("/token", createToken)
+	e.POST("/token", tokenHandler)
 
 	// Redirects users to the doc
 	e.GET("/", redirectToDocumentation)
