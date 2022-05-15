@@ -120,13 +120,20 @@ var TokenValidator = middleware.JWTWithConfig(middleware.JWTConfig{
 func AuthValidator(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 
-		// Get currently logged in client's ID
-		clientEmail := fmt.Sprint(c.Get("client_id"))
-		loggedInUser, err := GetUserWithEmail(clientEmail)
-		if err != nil {
+		// Get currently logged in user's ID
+		user := c.Get("user").(*jwt.Token)
+		claims, ok := user.Claims.(*TokenClaims)
+		if !ok {
 			return &echo.HTTPError{
 				Code:    http.StatusInternalServerError,
-				Message: fmt.Sprintf("Invalid User logged in: '%s'", clientEmail),
+				Message: "Failed to parse logged in user info from JWT.",
+			}
+		}
+		loggedInUser, err := GetUserWithEmail(claims.Email)
+		if err != nil {
+			return &echo.HTTPError{
+				Code:    http.StatusNotFound,
+				Message: "No user with that email could be found on the server.",
 			}
 		}
 
