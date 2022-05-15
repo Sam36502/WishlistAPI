@@ -12,14 +12,12 @@ type User struct {
 	UserID   uint64 `json:"user_id"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
-	Domain   string `json:"domain"`
 	Name     string `json:"name"`
 }
 
 type UserDTO struct {
 	UserID uint64 `json:"user_id"`
 	Email  string `json:"email"`
-	Domain string `json:"domain"`
 	Name   string `json:"name"`
 }
 
@@ -54,7 +52,6 @@ func readAllUsers(c echo.Context) error {
 		dtoArr = append(dtoArr, &UserDTO{
 			UserID: u.UserID,
 			Email:  u.Email,
-			Domain: u.Domain,
 			Name:   u.Name,
 		})
 	}
@@ -75,7 +72,6 @@ func readUser(c echo.Context) error {
 	uDTO := UserDTO{
 		UserID: user.UserID,
 		Email:  user.Email,
-		Domain: user.Domain,
 		Name:   user.Name,
 	}
 
@@ -139,7 +135,6 @@ func userByEmail(c echo.Context) error {
 	userDTO := UserDTO{
 		UserID: user.UserID,
 		Email:  user.Email,
-		Domain: user.Domain,
 		Name:   user.Name,
 	}
 

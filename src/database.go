@@ -106,7 +106,7 @@ func GetAllUsers() ([]*User, error) {
 	userArr := make([]*User, 0)
 	for rows.Next() {
 		parsedUser := User{}
-		err = rows.Scan(&parsedUser.UserID, &parsedUser.Email, &parsedUser.Password, &parsedUser.Domain, &parsedUser.Name)
+		err = rows.Scan(&parsedUser.UserID, &parsedUser.Email, &parsedUser.Password, &parsedUser.Name)
 		if err != nil {
 			fmt.Println(" [ERROR] Parsing Failed:", err)
 			return nil, err
@@ -127,7 +127,7 @@ func GetUserWithID(id uint64) (*User, error) {
 
 	parsedUser := User{}
 	rows.Next()
-	err = rows.Scan(&parsedUser.UserID, &parsedUser.Email, &parsedUser.Password, &parsedUser.Domain, &parsedUser.Name)
+	err = rows.Scan(&parsedUser.UserID, &parsedUser.Email, &parsedUser.Password, &parsedUser.Name)
 	if err != nil {
 		fmt.Println(" [ERROR] Parsing Failed:", err)
 		return nil, err
@@ -147,7 +147,7 @@ func GetUserWithEmail(email string) (*User, error) {
 
 	parsedUser := User{}
 	rows.Next()
-	err = rows.Scan(&parsedUser.UserID, &parsedUser.Email, &parsedUser.Password, &parsedUser.Domain, &parsedUser.Name)
+	err = rows.Scan(&parsedUser.UserID, &parsedUser.Email, &parsedUser.Password, &parsedUser.Name)
 	if err != nil {
 		fmt.Println(" [ERROR] Parsing Failed:", err)
 		return nil, err
@@ -198,12 +198,6 @@ func UpdateUser(user *User) error {
 		noArgs = false
 		queryStr += "`password` = SHA1(UNHEX(SHA1(?))) ,"
 		argArr = append(argArr, user.Password)
-	}
-
-	if user.Domain != "" {
-		noArgs = false
-		queryStr += "`domain` = ? ,"
-		argArr = append(argArr, user.Domain)
 	}
 
 	if user.Name != "" {
@@ -281,7 +275,6 @@ func GetAllItems(userID uint64) ([]*Item, error) {
 			&parsedItem.Status.Description,
 			&parsedItem.User.UserID,
 			&parsedItem.User.Email,
-			&parsedItem.User.Domain,
 			&parsedItem.User.Name,
 		)
 		if err != nil {
@@ -304,7 +297,6 @@ func GetAllItems(userID uint64) ([]*Item, error) {
 			err = rows.Scan(
 				&parsedItem.ReservedByUser.UserID,
 				&parsedItem.ReservedByUser.Email,
-				&parsedItem.ReservedByUser.Domain,
 				&parsedItem.ReservedByUser.Name,
 			)
 			if err != nil {
@@ -376,7 +368,6 @@ func GetItemWithID(id uint64) (*Item, error) {
 		&parsedItem.Status.Description,
 		&parsedItem.User.UserID,
 		&parsedItem.User.Email,
-		&parsedItem.User.Domain,
 		&parsedItem.User.Name,
 	)
 	if err != nil {
@@ -399,7 +390,6 @@ func GetItemWithID(id uint64) (*Item, error) {
 		err = rows.Scan(
 			&parsedItem.ReservedByUser.UserID,
 			&parsedItem.ReservedByUser.Email,
-			&parsedItem.ReservedByUser.Domain,
 			&parsedItem.ReservedByUser.Name,
 		)
 		if err != nil {
@@ -567,7 +557,7 @@ func SearchUsersByNameOrEmail(name string) ([]*User, error) {
 	userArr := make([]*User, 0)
 	for rows.Next() {
 		parsedUser := User{}
-		err = rows.Scan(&parsedUser.UserID, &parsedUser.Email, &parsedUser.Password, &parsedUser.Domain, &parsedUser.Name)
+		err = rows.Scan(&parsedUser.UserID, &parsedUser.Email, &parsedUser.Password, &parsedUser.Name)
 		if err != nil {
 			fmt.Println(" [ERROR] Parsing Failed:", err)
 			return nil, err
