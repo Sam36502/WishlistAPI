@@ -54,8 +54,29 @@ func tokenHandler(c echo.Context) error {
 		}
 	}
 
+	// Hash request password
+	rows, err := Database.Query("SELECT SHA1(UNHEX(SHA1(?)))", authreq.Password)
+	if err != nil {
+		fmt.Println(" [ERROR] Query Failed. Failed to Hash Password: ", err)
+		return &echo.HTTPError{
+			Code:    http.StatusUnauthorized,
+			Message: "Failed to hash password while authenticating. Aborted.",
+		}
+	}
+	defer rows.Close()
+	hashedPassword := ""
+	rows.Next()
+	err = rows.Scan(&hashedPassword)
+	if err != nil {
+		fmt.Println(" [ERROR] Query Failed. Failed to retrieve hashed password: ", err)
+		return &echo.HTTPError{
+			Code:    http.StatusUnauthorized,
+			Message: "Failed to hash password while authenticating. Aborted.",
+		}
+	}
+
 	// Check auth details are valid
-	if usr.Password != authreq.Password {
+	if usr.Password != hashedPassword {
 		return &echo.HTTPError{
 			Code:    http.StatusUnauthorized,
 			Message: "Invalid credentials provided",
