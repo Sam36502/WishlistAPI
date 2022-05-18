@@ -12,6 +12,8 @@ services:
      - WISHLIST_DB_HOSTNAME=wishlist_db
      - WISHLIST_API_DOMAIN=www.pearcenet.ch
      - WISHLIST_TOK_SIGNING_KEY=thisisatest
+    volumes:
+     - /etc/letsencrypt:/certs:ro
   wishlist_db:
     image: "mysql"
     command: mysqld --default-authentication-plugin=mysql_native_password
