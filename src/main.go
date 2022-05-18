@@ -11,6 +11,6 @@ func main() {
 	ConnectDB()
 	InitRoutes(e)
 
-	//e.Logger.Fatal(e.StartTLS(":"+os.Getenv("WISHLIST_API_PORTNUM"), os.Getenv("WISHLIST_SSL_CERT"), os.Getenv("WISHLIST_SSL_KEY")))
-	e.Logger.Fatal(e.Start(":2512"))
+	e.Logger.Fatal(e.StartTLS(":"+os.Getenv("WISHLIST_API_PORTNUM"), os.Getenv("WISHLIST_SSL_CERT"), os.Getenv("WISHLIST_SSL_KEY")))
+	//e.Logger.Fatal(e.Start(":2512"))
 }
