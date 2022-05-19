@@ -248,7 +248,7 @@ func GetAllItems(userID uint64) ([]*Item, error) {
 	rows, err := Database.Query("SELECT "+
 		"i.id_item, i.name, i.desc, i.price, i.reserved_by_user_id, "+
 		"s.id_status, s.name, s.desc, "+
-		"u.id_user, u.email, u.domain, u.name "+
+		"u.id_user, u.email, u.name "+
 		"FROM `tbl_item` i "+
 		"JOIN `tbl_status` s ON i.status_id = s.id_status "+
 		"JOIN `tbl_user` u ON i.user_id = u.id_user "+
@@ -285,7 +285,7 @@ func GetAllItems(userID uint64) ([]*Item, error) {
 		// Get Reserved-By User if Present
 		if reservedByUserID.Valid {
 			rows, err := Database.Query("SELECT "+
-				"id_user, email, domain, name "+
+				"id_user, email, name "+
 				"FROM `tbl_user` WHERE id_user = ?", reservedByUserID.Int64)
 			if err != nil {
 				fmt.Println(" [ERROR] Query Failed:", err)
@@ -342,7 +342,7 @@ func GetItemWithID(id uint64) (*Item, error) {
 	rows, err := Database.Query("SELECT "+
 		"i.id_item, i.name, i.desc, i.price, i.reserved_by_user_id, "+
 		"s.id_status, s.name, s.desc, "+
-		"u.id_user, u.email, u.domain, u.name "+
+		"u.id_user, u.email, u.name "+
 		"FROM `tbl_item` i "+
 		"JOIN `tbl_status` s ON i.status_id = s.id_status "+
 		"JOIN `tbl_user` u ON i.user_id = u.id_user "+
@@ -378,7 +378,7 @@ func GetItemWithID(id uint64) (*Item, error) {
 	// Get Reserved-By User if Present
 	if reservedByUserID.Valid {
 		rows, err := Database.Query("SELECT "+
-			"id_user, email, domain, name "+
+			"id_user, email, name "+
 			"FROM `tbl_user` WHERE id_user = ?", reservedByUserID.Int64)
 		if err != nil {
 			fmt.Println(" [ERROR] Query Failed:", err)
