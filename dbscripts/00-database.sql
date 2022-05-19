@@ -15,7 +15,7 @@ CREATE TABLE `tbl_user` (
   PRIMARY KEY (`id_user`),
   UNIQUE KEY `id_user` (`id_user`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `tbl_status`;
 CREATE TABLE `tbl_status` (
@@ -36,7 +36,7 @@ CREATE TABLE `tbl_item` (
   `status_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `price` int(11) NOT NULL DEFAULT '0',
-  `reserved_by_user_id` int(11) NOT NULL,
+  `reserved_by_user_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id_item`),
   UNIQUE KEY `id_item` (`id_item`),
   KEY `status_id` (`status_id`),
@@ -45,7 +45,7 @@ CREATE TABLE `tbl_item` (
   CONSTRAINT `tbl_item_ibfk_1` FOREIGN KEY (`status_id`) REFERENCES `tbl_status` (`id_status`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `tbl_item_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `tbl_user` (`id_user`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `tbl_item_ibfk_3` FOREIGN KEY (`reserved_by_user_id`) REFERENCES `tbl_user` (`id_user`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `tbl_link`;
 CREATE TABLE `tbl_link` (
@@ -57,4 +57,4 @@ CREATE TABLE `tbl_link` (
   UNIQUE KEY `id_link` (`id_link`),
   KEY `item_id` (`item_id`),
   CONSTRAINT `tbl_link_ibfk_1` FOREIGN KEY (`item_id`) REFERENCES `tbl_item` (`id_item`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8;
