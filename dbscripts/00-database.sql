@@ -36,6 +36,7 @@ CREATE TABLE `tbl_item` (
   `status_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `price` int(11) NOT NULL DEFAULT '0',
+  `reserved_by_user_id` int(11) NOT NULL,
   PRIMARY KEY (`id_item`),
   UNIQUE KEY `id_item` (`id_item`),
   KEY `status_id` (`status_id`),
