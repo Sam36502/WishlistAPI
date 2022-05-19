@@ -40,8 +40,10 @@ CREATE TABLE `tbl_item` (
   UNIQUE KEY `id_item` (`id_item`),
   KEY `status_id` (`status_id`),
   KEY `user_id` (`user_id`),
+  KEY `reserved_by_user_id` (`reserved_by_user_id`),
   CONSTRAINT `tbl_item_ibfk_1` FOREIGN KEY (`status_id`) REFERENCES `tbl_status` (`id_status`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `tbl_item_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `tbl_user` (`id_user`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `tbl_item_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `tbl_user` (`id_user`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `tbl_item_ibfk_3` FOREIGN KEY (`reserved_by_user_id`) REFERENCES `tbl_user` (`id_user`) ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
 
 DROP TABLE IF EXISTS `tbl_link`;
