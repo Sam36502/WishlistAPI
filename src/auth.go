@@ -126,7 +126,7 @@ func AuthValidator(next echo.HandlerFunc) echo.HandlerFunc {
 		if !ok {
 			return &echo.HTTPError{
 				Code:    http.StatusInternalServerError,
-				Message: "Failed to retrieve JWT data from middleware.",
+				Message: "Failed to retrieve JWT data from middleware",
 			}
 		}
 		claims, ok := token.Claims.(*TokenClaims)
@@ -140,7 +140,7 @@ func AuthValidator(next echo.HandlerFunc) echo.HandlerFunc {
 		if err != nil {
 			return &echo.HTTPError{
 				Code:    http.StatusNotFound,
-				Message: "No user with that email could be found on the server.",
+				Message: "Token used is for a user that doesn't exist anymore",
 			}
 		}
 
@@ -157,9 +157,11 @@ func AuthValidator(next echo.HandlerFunc) echo.HandlerFunc {
 		if id != loggedInUser.UserID {
 			return &echo.HTTPError{
 				Code:    http.StatusForbidden,
-				Message: "You are forbidden from changing/deleting other users than yourself.",
+				Message: "You are forbidden from changing/deleting other users than yourself",
 			}
 		}
+
+		c.Set("client_email", claims.Email)
 
 		return next(c)
 	}

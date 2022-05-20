@@ -432,7 +432,7 @@ func InsertItem(item *Item) error {
 	// Insert Item
 	res, err := Database.Exec("INSERT INTO `tbl_item` (`name`, `desc`, price, status_id, user_id) VALUES (?, ?, ?, ?, ?)", item.Name, item.Description, item.Price, item.Status.StatusID, item.User.UserID)
 	if err != nil {
-		fmt.Println(" [ERROR] Query failed.", err)
+		fmt.Println(" [ERROR] Query failed inserting item.", err)
 		return err
 	}
 
@@ -448,7 +448,7 @@ func InsertItem(item *Item) error {
 	for _, link := range item.Links {
 		_, err = Database.Query("INSERT INTO `tbl_link` (text, hyperlink, item_id) VALUES (?, ?, ?)", link.Text, link.Hyperlink, id) // Use Last insert ID as itemID
 		if err != nil {
-			fmt.Println(" [ERROR] Query failed.", err)
+			fmt.Println(" [ERROR] Query failed adding links", err)
 			return err
 		}
 	}

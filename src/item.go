@@ -130,7 +130,7 @@ func reserveItem(c echo.Context) error {
 	item_id := uint64(idSigned)
 
 	// Get the user whose reserving the item
-	clientEmail := fmt.Sprint(c.Get("client_id"))
+	clientEmail := fmt.Sprint(c.Get("client_email"))
 	loggedInUser, err := GetUserWithEmail(clientEmail)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "Invalid User logged in: "+clientEmail)
@@ -160,7 +160,7 @@ func unreserveItem(c echo.Context) error {
 	item_id := uint64(idSigned)
 
 	// Get the user whose unreserving the item
-	clientEmail := fmt.Sprint(c.Get("client_id"))
+	clientEmail := fmt.Sprint(c.Get("client_email"))
 	loggedInUser, err := GetUserWithEmail(clientEmail)
 	if err != nil {
 		return c.String(http.StatusInternalServerError, "Invalid User logged in: "+clientEmail)
