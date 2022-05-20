@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 )
 
@@ -129,11 +130,27 @@ func reserveItem(c echo.Context) error {
 	}
 	item_id := uint64(idSigned)
 
-	// Get the user whose reserving the item
-	clientEmail := fmt.Sprint(c.Get("client_email"))
-	loggedInUser, err := GetUserWithEmail(clientEmail)
+	// Get currently logged in token's ID
+	token, ok := c.Get("user").(*jwt.Token)
+	if !ok {
+		return &echo.HTTPError{
+			Code:    http.StatusInternalServerError,
+			Message: "Failed to retrieve JWT data from middleware",
+		}
+	}
+	claims, ok := token.Claims.(*TokenClaims)
+	if !ok {
+		return &echo.HTTPError{
+			Code:    http.StatusInternalServerError,
+			Message: "Failed to retrieve user claims from middleware JWT",
+		}
+	}
+	loggedInUser, err := GetUserWithEmail(claims.Email)
 	if err != nil {
-		return c.String(http.StatusInternalServerError, "Invalid User logged in: "+clientEmail)
+		return &echo.HTTPError{
+			Code:    http.StatusNotFound,
+			Message: "Token used is for a user that doesn't exist anymore",
+		}
 	}
 
 	err = UpdateItem(&Item{
@@ -159,11 +176,27 @@ func unreserveItem(c echo.Context) error {
 	}
 	item_id := uint64(idSigned)
 
-	// Get the user whose unreserving the item
-	clientEmail := fmt.Sprint(c.Get("client_email"))
-	loggedInUser, err := GetUserWithEmail(clientEmail)
+	// Get currently logged in token's ID
+	token, ok := c.Get("user").(*jwt.Token)
+	if !ok {
+		return &echo.HTTPError{
+			Code:    http.StatusInternalServerError,
+			Message: "Failed to retrieve JWT data from middleware",
+		}
+	}
+	claims, ok := token.Claims.(*TokenClaims)
+	if !ok {
+		return &echo.HTTPError{
+			Code:    http.StatusInternalServerError,
+			Message: "Failed to retrieve user claims from middleware JWT",
+		}
+	}
+	loggedInUser, err := GetUserWithEmail(claims.Email)
 	if err != nil {
-		return c.String(http.StatusInternalServerError, "Invalid User logged in: "+clientEmail)
+		return &echo.HTTPError{
+			Code:    http.StatusNotFound,
+			Message: "Token used is for a user that doesn't exist anymore",
+		}
 	}
 
 	item, err := GetItemWithID(item_id)

@@ -161,8 +161,6 @@ func AuthValidator(next echo.HandlerFunc) echo.HandlerFunc {
 			}
 		}
 
-		c.Set("client_email", claims.Email)
-
 		return next(c)
 	}
 }
