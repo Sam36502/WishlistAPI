@@ -4,8 +4,6 @@ services:
     image: "wishlist_api"
     ports:
      - 2512:2512
-    env_file:
-      - .env
     environment:
      - WISHLIST_API_PORTNUM=2512
      - WISHLIST_DB_USERNAME=wishlist_user
@@ -17,10 +15,9 @@ services:
   wishlist_db:
     image: "mysql"
     command: mysqld --default-authentication-plugin=mysql_native_password
-    env_file:
-      - .env
     environment:
       - MYSQL_USER=wishlist_user
     volumes:
+      - wishlist-db-data:/var/lib/mysql
       - ./dbscripts:/docker-entrypoint-initdb.d
       - /var/wishlist_api/mysql:/var/lib/mysql
