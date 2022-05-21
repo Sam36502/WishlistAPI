@@ -20,7 +20,7 @@ services:
     env_file:
       - .env
     environment:
-      - MYSQL_USERNAME=wishlist_user
+      - MYSQL_USER=wishlist_user
     volumes:
       - ./dbscripts:/docker-entrypoint-initdb.d
       - /var/wishlist_api/mysql:/var/lib/mysql
