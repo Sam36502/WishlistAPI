@@ -18,6 +18,5 @@ services:
     environment:
       - MYSQL_USER=wishlist_user
     volumes:
-      - wishlist-db-data:/var/lib/mysql
       - ./dbscripts:/docker-entrypoint-initdb.d
       - /var/wishlist_api/mysql:/var/lib/mysql
