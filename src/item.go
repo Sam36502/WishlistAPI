@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/golang-jwt/jwt"
 	"github.com/labstack/echo/v4"
 )
 
@@ -35,13 +34,19 @@ type Item struct {
 func readAllItems(c echo.Context) error {
 	idSigned, err := strconv.ParseInt(c.Param("user_id"), 10, 64)
 	if err != nil {
-		return c.String(http.StatusBadRequest, "Invalid User ID provided: \""+c.Param("user_id")+"\"")
+		return c.JSON(http.StatusBadRequest, ErrorDTO{
+			Code:    "invalid_user_id",
+			Message: "Invalid User ID provided: \"" + c.Param("user_id") + "\"",
+		})
 	}
 	id := uint64(idSigned)
 
 	items, err := GetAllItems(id)
 	if err != nil {
-		return c.String(http.StatusInternalServerError, "Failed to retreve items.")
+		return c.JSON(http.StatusInternalServerError, ErrorDTO{
+			Code:    "retrieve_item_fail",
+			Message: "Failed to retreve items.",
+		})
 	}
 	return c.JSON(http.StatusOK, items)
 }
@@ -52,33 +57,51 @@ func createItem(c echo.Context) error {
 	err := c.Bind(item)
 	if err != nil {
 		fmt.Println(" [ERROR] Bind parsing failed:\n ", err)
-		return c.String(http.StatusBadRequest, "Invalid Item format received.")
+		return c.JSON(http.StatusBadRequest, ErrorDTO{
+			Code:    "invalid_item_format",
+			Message: "Invalid Item format received.",
+		})
 	}
 
 	// Using User ID from URL to save redundancy
 	idSigned, err := strconv.ParseInt(c.Param("user_id"), 10, 64)
 	if err != nil {
-		return c.String(http.StatusBadRequest, "Invalid User ID provided: \""+c.Param("user_id")+"\"")
+		return c.JSON(http.StatusBadRequest, ErrorDTO{
+			Code:    "invalid_user_id",
+			Message: "Invalid User ID provided: \"" + c.Param("user_id") + "\"",
+		})
 	}
 	item.User.UserID = uint64(idSigned)
 
 	// Insert Item
 	err = InsertItem(item)
 	if err != nil {
-		return c.String(http.StatusInternalServerError, "Failed to add item.")
+		return c.JSON(http.StatusInternalServerError, ErrorDTO{
+			Code:    "item_add_fail",
+			Message: "Failed to add item.",
+		})
 	}
 
-	return c.String(http.StatusOK, "Successfully added item")
+	return c.JSON(http.StatusOK, ErrorDTO{
+		Code:    "item_add_succ",
+		Message: "Successfully added item",
+	})
 }
 
 func readItem(c echo.Context) error {
 	id, err := strconv.Atoi(c.Param("item_id"))
 	if err != nil {
-		return c.String(http.StatusBadRequest, "Invalid Item ID provided: "+c.Param("item_id"))
+		return c.JSON(http.StatusBadRequest, ErrorDTO{
+			Code:    "invalid_item_id",
+			Message: "Invalid Item ID provided: " + c.Param("item_id"),
+		})
 	}
 	item, err := GetItemWithID(uint64(id))
 	if err != nil {
-		return c.String(http.StatusNotFound, "Item not found.")
+		return c.JSON(http.StatusNotFound, ErrorDTO{
+			Code:    "item_not_found",
+			Message: "Item not found.",
+		})
 	}
 	return c.JSON(http.StatusOK, item)
 }
@@ -90,67 +113,73 @@ func updateItem(c echo.Context) error {
 	err := c.Bind(item)
 	if err != nil {
 		fmt.Println(" [ERROR] Bind parsing failed:\n ", err)
-		return c.String(http.StatusBadRequest, "Invalid Item format received.")
+		return c.JSON(http.StatusBadRequest, ErrorDTO{
+			Code:    "invalid_item_format",
+			Message: "Invalid Item format received.",
+		})
 	}
 
 	// Using Item ID from URL to save redundancy
 	idSigned, err := strconv.ParseInt(c.Param("item_id"), 10, 64)
 	if err != nil {
-		return c.String(http.StatusBadRequest, "Invalid Item ID provided: \""+c.Param("item_id")+"\"")
+		return c.JSON(http.StatusBadRequest, ErrorDTO{
+			Code:    "invalid_item_id",
+			Message: "Invalid Item ID provided: \"" + c.Param("item_id") + "\"",
+		})
 	}
 	item.ItemID = uint64(idSigned)
 
 	err = UpdateItem(item)
 	if err != nil {
-		return c.String(http.StatusInternalServerError, "Failed to update the item.")
+		return c.JSON(http.StatusInternalServerError, ErrorDTO{
+			Code:    "edit_item_fail",
+			Message: "Failed to update the item.",
+		})
 	}
 
-	return c.String(http.StatusOK, "Successfully updated the item.")
+	return c.JSON(http.StatusOK, ErrorDTO{
+		Code:    "edit_item_succ",
+		Message: "Successfully updated the item.",
+	})
 }
 
 func deleteItem(c echo.Context) error {
 	idSigned, err := strconv.ParseInt(c.Param("item_id"), 10, 64)
 	if err != nil {
-		return c.String(http.StatusBadRequest, "Invalid Item ID provided: \""+c.Param("item_id")+"\"")
+		return c.JSON(http.StatusBadRequest, ErrorDTO{
+			Code:    "invalid_item_id",
+			Message: "Invalid Item ID provided: \"" + c.Param("item_id") + "\"",
+		})
 	}
 	id := uint64(idSigned)
 
 	err = DeleteItem(id)
 	if err != nil {
-		return c.String(http.StatusInternalServerError, "Failed to delete item.")
+		return c.JSON(http.StatusInternalServerError, ErrorDTO{
+			Code:    "delete_item_fail",
+			Message: "Failed to delete item.",
+		})
 	}
 
-	return c.String(http.StatusOK, "Item successfully deleted.")
+	return c.JSON(http.StatusOK, ErrorDTO{
+		Code:    "delete_item_succ",
+		Message: "Item successfully deleted.",
+	})
 }
 
 func reserveItem(c echo.Context) error {
 	idSigned, err := strconv.ParseInt(c.Param("item_id"), 10, 64)
 	if err != nil {
-		return c.String(http.StatusBadRequest, "Invalid Item ID provided: \""+c.Param("item_id")+"\"")
+		return c.JSON(http.StatusBadRequest, ErrorDTO{
+			Code:    "invalid_item_id",
+			Message: "Invalid Item ID provided: \"" + c.Param("item_id") + "\"",
+		})
 	}
 	item_id := uint64(idSigned)
 
-	// Get currently logged in token's ID
-	token, ok := c.Get("user").(*jwt.Token)
-	if !ok {
-		return &echo.HTTPError{
-			Code:    http.StatusInternalServerError,
-			Message: "Failed to retrieve JWT data from middleware",
-		}
-	}
-	claims, ok := token.Claims.(*TokenClaims)
-	if !ok {
-		return &echo.HTTPError{
-			Code:    http.StatusInternalServerError,
-			Message: "Failed to retrieve user claims from middleware JWT",
-		}
-	}
-	loggedInUser, err := GetUserWithEmail(claims.Email)
+	loggedInUser, err := GetLoggedInUser(c)
 	if err != nil {
-		return &echo.HTTPError{
-			Code:    http.StatusNotFound,
-			Message: "Token used is for a user that doesn't exist anymore",
-		}
+		return err
 	}
 
 	err = UpdateItem(&Item{
@@ -172,31 +201,16 @@ func reserveItem(c echo.Context) error {
 func unreserveItem(c echo.Context) error {
 	idSigned, err := strconv.ParseInt(c.Param("item_id"), 10, 64)
 	if err != nil {
-		return c.String(http.StatusBadRequest, "Invalid Item ID provided: \""+c.Param("item_id")+"\"")
+		return c.JSON(http.StatusBadRequest, ErrorDTO{
+			Code:    "invalid_item_id",
+			Message: "Invalid Item ID provided: \"" + c.Param("item_id") + "\"",
+		})
 	}
 	item_id := uint64(idSigned)
 
-	// Get currently logged in token's ID
-	token, ok := c.Get("user").(*jwt.Token)
-	if !ok {
-		return &echo.HTTPError{
-			Code:    http.StatusInternalServerError,
-			Message: "Failed to retrieve JWT data from middleware",
-		}
-	}
-	claims, ok := token.Claims.(*TokenClaims)
-	if !ok {
-		return &echo.HTTPError{
-			Code:    http.StatusInternalServerError,
-			Message: "Failed to retrieve user claims from middleware JWT",
-		}
-	}
-	loggedInUser, err := GetUserWithEmail(claims.Email)
+	loggedInUser, err := GetLoggedInUser(c)
 	if err != nil {
-		return &echo.HTTPError{
-			Code:    http.StatusNotFound,
-			Message: "Token used is for a user that doesn't exist anymore",
-		}
+		return err
 	}
 
 	item, err := GetItemWithID(item_id)

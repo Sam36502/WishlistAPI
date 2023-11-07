@@ -15,9 +15,6 @@ func InitRoutes(e *echo.Echo) {
 	// Add the token endpoint so users can get a token
 	e.POST("/token", tokenHandler)
 
-	// Redirects users to the doc
-	e.GET("/", redirectToDocumentation)
-
 	// Displays the API's Status for checking
 	e.GET("/status", statusPage)
 
@@ -50,10 +47,6 @@ func InitRoutes(e *echo.Echo) {
 	e.PUT("/user/:user_id/list/:item_id/reserve", reserveItem, TokenValidator)     // Note: Doesn't use AuthValidator, because other users can set it, but they still need to be logged in
 	e.PUT("/user/:user_id/list/:item_id/unreserve", unreserveItem, TokenValidator) // Note: Doesn't use AuthValidator, because other users can set it, but they still need to be logged in
 
-}
-
-func redirectToDocumentation(c echo.Context) error {
-	return c.Redirect(http.StatusMovedPermanently, "https://www.pearcenet.ch/wishlist/doc/")
 }
 
 func statusPage(c echo.Context) error {

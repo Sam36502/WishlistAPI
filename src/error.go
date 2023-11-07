@@ -1,6 +1,13 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
+
+type ErrorDTO struct {
+	Code    string `json:"err_code"`
+	Message string `json:"err_msg"`
+}
 
 type EmailInUseError string
 

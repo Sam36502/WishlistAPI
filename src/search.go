@@ -29,7 +29,10 @@ func SearchUsers(c echo.Context) error {
 
 	// Get Search Query
 	if !c.QueryParams().Has("search") {
-		return c.String(http.StatusBadRequest, "Bad Request. 'search' query parameter required.")
+		return c.JSON(http.StatusBadRequest, ErrorDTO{
+			Code:    "param_required_search",
+			Message: "Bad Request. 'search' query parameter required.",
+		})
 	}
 	query := c.QueryParam("search")
 	query = strings.ToLower(query)
@@ -37,7 +40,10 @@ func SearchUsers(c echo.Context) error {
 	// Get all users with the query in their names
 	allUsers, err := SearchUsersByNameOrEmail(query)
 	if err != nil {
-		return c.String(http.StatusInternalServerError, "Failed to retrieve users.")
+		return c.JSON(http.StatusInternalServerError, ErrorDTO{
+			Code:    "search_user_fail",
+			Message: "Failed to retrieve users.",
+		})
 	}
 
 	// Sort results by how close they are to the search string
