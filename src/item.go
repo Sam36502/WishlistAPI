@@ -153,6 +153,14 @@ func deleteItem(c echo.Context) error {
 	}
 	id := uint64(idSigned)
 
+	_, err = GetItemWithID(id)
+	if err != nil {
+		return c.JSON(http.StatusNotFound, ErrorDTO{
+			Code:    "item_not_found",
+			Message: "Couldn't delete item; Item not found.",
+		})
+	}
+
 	err = DeleteItem(id)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, ErrorDTO{

@@ -356,7 +356,10 @@ func GetItemWithID(id uint64) (*Item, error) {
 	// Parse Items
 	parsedItem := Item{}
 	var reservedByUserID sql.NullInt64
-	rows.Next()
+	hasNext := rows.Next()
+	if !hasNext {
+		return nil, fmt.Errorf("No item with that ID exists")
+	}
 	err = rows.Scan(
 		&parsedItem.ItemID,
 		&parsedItem.Name,
